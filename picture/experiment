@@ -38,7 +38,10 @@ class Picture:
         outlineColor = (0, 0, 0)
 
         global fillColor
-        fillColor = FILL
+        if FILL != None:
+            fillColor = FILL
+        else:
+            fillColor = (255, 255, 255)
 
         global penWidth
         penWidth = 1.0

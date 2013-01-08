@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import math
 import Image
 import ImageDraw
 import tkinter
@@ -76,7 +77,10 @@ class Picture():
         return self.pen_rotation
     
     def drawForward(self, distance):
-        pass
+        rads = math.radians(self.pen_rotation)
+        x = distance*math.sin(rads)
+        y = distance*math.cos(rads)
+        self.draw.line((self.pen_position, (x, y)), fill=self.pen_color)
 
     def drawCircle(self, x, y, radius):
         self.draw.ellipse((x-radius/2, y-radius/2,

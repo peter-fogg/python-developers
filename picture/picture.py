@@ -19,9 +19,11 @@ class Picture():
         self.pen_color = (0, 0, 0)
         self.pen_position = (0, 0)
         self.pen_width = 1.0
-        self.draw = ImageDraw.Draw(self.image)
-        
+        self.pen_rotation = 0
+        # Pixel data of the image
         self.pixel = self.image.load()
+        # Draw object of the image
+        self.draw = ImageDraw.Draw(self.image)
     
     ##
     # Get the width of the picture
@@ -153,7 +155,7 @@ class Picture():
 
     ##
     # Return the direction of the pen.
-    # @return The current direction (in degrees?) of the pen.
+    # @return The current direction in degrees of the pen.
     def getDirection(self):
         return self.pen_rotation
     
@@ -161,10 +163,11 @@ class Picture():
     # Draw forward by a given amount.
     # @param distance The number of pixels to draw forward.
     def drawForward(self, distance):
-        rads = math.radians(self.pen_rotation)
-        x = distance*math.sin(rads)
-        y = distance*math.cos(rads)
-        self.draw.line((self.pen_position, (x, y)), fill=self.pen_color)
+        endX = self.pen_rotation[0] + math.cos(radian)*distance
+        endY = self.pen_rotation[1] + math.sin(radian)*distance
+        end = (endX, endY)
+        self.draw.line(self.pen_position, end, fill=self.pen_color)
+        self.pen_position = end
 
     ##
     # Draw the outline of a circle.

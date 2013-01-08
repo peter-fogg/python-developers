@@ -18,7 +18,10 @@ class Picture():
         # Default values for pen
         self.pen_color = (0, 0, 0)
         self.pen_position = (0, 0)
+        self.pen_width = 1.0
         self.draw = ImageDraw.Draw(self.image)
+        
+        self.pixel = self.image.load()
     
     def getWidth(self):
         return self.image.size[0]
@@ -33,28 +36,34 @@ class Picture():
         pass
     
     def getPixelColor(self, x, y):
-        return self.image.getpixel((x, y))
+        return self.pixel[x, y]
     
     def getPixelRed(self, x, y):
-        return self.image.getpixel((x, y))[0]
+        return self.pixel[x, y][0]
     
     def getPixelBlue(self, x, y):
-        return self.image.getpixel((x, y))[1]
+        return self.pixel[x, y][1]
     
     def getPixelGreen(self, x, y):
-        return self.image.getpixel((x, y))[2]
+        return self.pixel[x, y][2]
     
     def setPixelColor(self, x, y, r, g, b):
-        self.image.putpixel((x, y), (r, g, b))
-    
+        self.pixel[x, y] = (r, g, b)
+        
     def setPixelRed(self, x, y, val):
-        pass
+        green = self.pixel[x, y][1]
+        blue = self.pixel[x, y][2]
+        self.pixel[x, y] = (val, green, blue)
     
     def setPixelBlue(self, x, y, val):
-        pass
+        red = self.pixel[x, y][0]
+        green = self.pixel[x, y][1]
+        self.pixel[x, y] = (red, green, val)
     
     def setPixelGreen(self, x, y, val):
-        pass
+        red = self.pixel[x, y][0]
+        blue = self.pixel[x, y][2]
+        self.pixel[x, y] = (red, val, blue)
     
     def setPenColor(self, r, g, b):
         self.pen_color = (r, g, b)

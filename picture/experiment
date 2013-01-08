@@ -1,6 +1,5 @@
 ##Experimental stuff.
-##This thing cannot display image properly. It cannot draw shapes with certain
-##pen width either.
+##This thing cannot display image properly. It cannot draw shapes with certain pen width either.
 
 import tkinter
 from PIL import Image, ImageTk, ImageDraw
@@ -23,10 +22,11 @@ class Picture:
         else:
             print ("Hey give me the size for a new image!")
 
-        global root, tkimage, panel
+        global root, panel
         root = tkinter.Tk()
         tkimage = ImageTk.PhotoImage(im)
-        panel = tkinter.Label(root, image=tkimage).update()
+        panel = tkinter.Label(root, image=tkimage).pack()
+        root.update()
 
         global pix
         pix = im.load()
@@ -117,11 +117,11 @@ class Picture:
     def show(self):
 ##        global im
 ##        im.show()
-        global root, im, tkimage, panel
+        global root, im, panel
         tkimage.destroy()
         tkimage = ImageTk.PhotoImage(im)
-        #panel.pack()
-        #tkinter.Label(root, image=tkimage).pack()
+        panel.config(image=tkimage)
+        root.update()
 
     def save(self, fileName):
         global im

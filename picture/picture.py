@@ -2,7 +2,8 @@
 import math
 import Image
 import ImageDraw
-import tkinter
+import ImageTk
+import tkinter as tk
 
 class Picture():
     
@@ -24,6 +25,10 @@ class Picture():
         self.pixel = self.image.load()
         # Draw object of the image
         self.draw = ImageDraw.Draw(self.image)
+        # The main window, if we are displaying an image. If
+        # this is None, the window is closed. Otherwise, it
+        # is open.
+        self.root = None
     
     ##
     # Get the width of the picture
@@ -40,12 +45,26 @@ class Picture():
     ##
     # Display the picture.
     def display(self):
-        pass
+        # If we're already displaying an image, destroy it
+        if self.root:
+            self.root.destroy()
+            self.root = None
+        self.root = tk.Tk()
+        frame = tk.Frame(self.root, width=self.image.size[0], height=self.image.size[1])
+        img = ImageTk.PhotoImage(self.image)
+        label = tk.Label(frame, image=img)
+        # This line ensures that Python doesn't try to garbage collect
+        # our photo, due to a bug in Tk.
+        label.image = img
+        label.pack()
+        frame.pack()
     
     ##
     # Close the picture.
     def close(self):
-        pass
+        if self.root:
+            self.root.destroy()
+            self.root = None
     
     ##
     # Get the color of a pixel at a given coordinate.

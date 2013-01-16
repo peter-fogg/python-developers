@@ -1,8 +1,9 @@
-import collections
 import critter
+import collections
+import color
 import inspect
-import os
 import random
+import os
 
 ## TODO: GUI
 ## networking stuff? maybe later. pickle objects
@@ -182,10 +183,8 @@ class CritterModel():
         Return value is a tuple, which will be passed as *args to
         the critter's constructor.
         """
-        # There's no Color object in Python, so I'll just represent
-        # them as 3 ints, [0, 255]
         if critter.__name__ == 'Mouse':
-            return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+            return (color.Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),)
         elif critter.__name__ == 'Elephant':
             return (random.randint(0, 15),)
         # No other class needs parameters
@@ -217,6 +216,7 @@ def get_critters(directory='.'):
             # a non-Critter class which has a getMove method, we're fine.
             if inspect.isclass(obj) and hasattr(obj, 'getMove'):
                 critters.append(obj)
+    critters.remove(critter.Critter)
     return critters
 
 class ClassInfo():

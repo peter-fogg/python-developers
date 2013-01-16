@@ -141,7 +141,9 @@ class Picture():
     ##
     # Close the picture.
     def close(self):
-        self.root.destroy()
+        if self.root:
+            self.root.destroy()
+            self.root = None
     
     ##
     # Get the color of a pixel at a given coordinate.

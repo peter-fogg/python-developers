@@ -29,20 +29,20 @@ class CritterModel():
         self.critter_positions = {}
         # A map of critter classes to the number alive of that class.
         self.critter_class_states = {}
-        self.grid = [[None for x in range(width)] for x in range(height)]
+        self.grid = [[None for x in range(height)] for x in range(width)]
 
-    def add(num, critter):
+    def add(self, critter, num):
         """
         Adds a particular critter type num times. The critter should be
         a class, not an instantiated critter.
         """
-        if c not in self.critter_class_states:
-            self.critter_class_states[c] = ClassInfo(initial_count=num)
-        self.critter_class_states[c].alive = num
+        if critter not in self.critter_class_states:
+            self.critter_class_states[critter] = ClassInfo(initial_count=num)
+        self.critter_class_states[critter].alive = num
         for i in range(num):
-            args = create_parameters(critter)
+            args = CritterModel.create_parameters(critter)
             c = critter(*args)
-            self.critters.add(c)
+            self.critters.append(c)
             pos = self.random_location()
             self.critter_positions[c] = pos
             self.grid[pos.x][pos.y] = c
@@ -66,16 +66,17 @@ class CritterModel():
             direction = critter1.getMove(CritterInfo(position.x, position.y,
                                                      self.width, self.height,
                                                      self.get_neighbor_func(position)))
-            verify_move(move)
+            CritterModel.verify_move(direction)
             position = self.move(direction, position)
             # Fight, if necessary
             winner = critter1
             critter2 = self.grid[position.x][position.y]
             if critter2:
-                winner = fight(critter1, critter2)
+                winner = CritterModel.fight(critter1, critter2)
                 loser = critter1 if winner == critter2 else critter2
+                self.critter_positions[winner] = position
                 # Get the loser out of here
-                critter_positions.pop(loser)
+                self.critter_positions.pop(loser)
                 index = self.critters.index(loser)
                 if index <= i:
                     i -= 1
@@ -84,7 +85,7 @@ class CritterModel():
                 self.critter_class_states[loser.__class__].alive -= 1
                 self.critter_class_states[winner.__class__].kills += 1
             self.grid[position.x][position.y] = winner
-            
+            i += 1
             
     def move(self, direction, pos):
         """
@@ -117,8 +118,8 @@ class CritterModel():
         """
         weapon1 = critter1.fight(critter2.getChar())
         weapon2 = critter2.fight(critter1.getChar())
-        verify_weapon(weapon1)
-        verify_weapon(weapon2)
+        CritterModel.verify_weapon(weapon1)
+        CritterModel.verify_weapon(weapon2)
         if (weapon1 == critter.ROAR and weapon2 == critter.SCRATCH or
             weapon1 == critter.SCRATCH and weapon2 == critter.POUNCE or
             weapon1 == critter.POUNCE and weapon2 == critter.ROAR):
@@ -146,8 +147,8 @@ class CritterModel():
     
     def verify_move(move):
         "Make sure they don't move diagonally."
-        if move not in (critter.NORTH, critter.SOUTH, critter.EAST, critter.WEST):
-            raise LocationException("Don't move diagonally!")
+        if move not in (critter.NORTH, critter.SOUTH, critter.EAST, critter.WEST, critter.CENTER):
+            raise LocationException("Don't move diagonally! %s" % move)
 
     def verify_location(location):
         "Make sure students are using the right locations. If not, throws an exception."
@@ -186,7 +187,7 @@ class CritterModel():
         if critter.__name__ == 'Mouse':
             return (color.Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),)
         elif critter.__name__ == 'Elephant':
-            return (random.randint(0, 15),)
+            return (random.randint(1, 15),)
         # No other class needs parameters
         else:
             return ()
@@ -194,8 +195,9 @@ class CritterModel():
     def get_neighbor_func(self, position):
         "Returns the getNeighbor function for a particular position."
         def get_neighbor(direction):
-            neighbor = self.move(direction, position)
-            return self.grid[neighbor.x][neighbor.y].getChar()
+            neighbor_pos = self.move(direction, position)
+            neighbor = self.grid[neighbor_pos.x][neighbor_pos.y]
+            return neighbor.getChar() if neighbor else '.'
         return get_neighbor
             
 
@@ -227,7 +229,7 @@ class ClassInfo():
     def __init__(self, kills=0, alive=0, initial_count=0):
         self.kills = kills
         self.alive = alive
-        self.count = count
+        self.count = initial_count
 
 # These exceptions don't really need fancy names
 class WeaponException(Exception):

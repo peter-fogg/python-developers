@@ -1,11 +1,17 @@
+#!/usr/bin/env python3
 import tkinter as tk
+import critter_main
+import color
 
-class GUI():
+EMPTY_CHAR = '.'
+
+class CritterGUI():
     def __init__(self):
         self.root = tk.Tk()
         self.root.grid()
 
         self.canvas = tk.Canvas(self.root, bg="black", height=500, width=700)
+        self.canvas.configure(background='white')
         self.canvas.grid(columnspan = 25, rowspan = 10, sticky = 'W')
 
         self.classes_label = tk.Label(self.root, text='Classes(Alive+Kill=Total):')
@@ -14,8 +20,9 @@ class GUI():
         self.speed_label = tk.Label(self.root, text='Speed:')
         self.speed_label.grid(column = 0, row = 10)
 
-        var = tk.IntVar()
-        self.scale = tk.Scale(self.root, variable = var, orient='horizontal',
+        self.speed_var = tk.IntVar()
+        self.speed_var.set(10)
+        self.scale = tk.Scale(self.root, variable = self.speed_var, orient='horizontal',
                               length = 100, sliderlength = 20)
         self.scale.grid(column = 1, row = 10)
 
@@ -62,8 +69,52 @@ class GUI():
         self.rb1.grid(column = 25, row = 10)
         self.rb2.grid(column = 26, row = 10)
         self.rb3.grid(column = 27, row = 10)
-        
-def main():
-    c = GUI()
 
-main()
+        # Actually make Critters.
+        self.model = critter_main.CritterModel(50, 60)
+        for critter in critter_main.get_critters():
+            self.model.add(critter, 25)
+    
+    def draw_char(self, char, color, x, y):
+        """
+        Displays a single char at position (x, y) on the canvas.
+
+        TODO: make sure the positioning is actually correct (it's probably not).
+        """
+        self.canvas.create_text((x*15 + 5, y*15 + 5), text=char, fill=color_to_hex(color),
+                                font=('Courier New', 15))
+    
+    def update(self):
+        """
+        Updates the GUI with the appropriate characters and colors from
+        the critter simulation. This should be called by Tk, not directly
+        from our code.
+        """
+        for x in range(self.model.width):
+            for y in range(self.model.height):
+                critter = self.model.grid[x][y]
+                if critter:
+                    self.draw_char(critter.getChar(), critter.getColor(), x, y)
+                else:
+                    self.draw_char(EMPTY_CHAR, color.BLACK, x, y)
+        self.model.update()
+        self.root.after(int(5000/self.speed_var.get()), self.update)
+    
+    def run(self):
+        """Actually runs the GUI. Pretty straightforward."""
+        self.update()
+        self.root.mainloop()
+
+def color_to_hex(color):
+    """
+    Converts RGB colors to hex string, because tkinter thought that
+    passing numeric types as strings was an AWESOME idea.
+    """
+    return '#%02x%02x%02x'.upper() % (color.r, color.g, color.b)
+
+def main():
+    c = CritterGUI()
+    c.run()
+
+if __name__ == '__main__':
+    main()

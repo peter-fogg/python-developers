@@ -1,4 +1,5 @@
 import critter
+import color
 
 class Elephant(critter.Critter):
 

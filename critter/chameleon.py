@@ -24,7 +24,7 @@ class Chameleon(critter.Critter):
         return self.color
 
     def getMove(self, info):
-        if num_wins < 0:
+        if Chameleon.num_wins < 0:
             if info.getNeighbor(critter.NORTH) == '.':
                 return critter.NORTH
             if info.getNeighbor(critter.SOUTH) == '.':

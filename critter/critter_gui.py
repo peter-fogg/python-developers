@@ -69,6 +69,11 @@ class CritterGUI():
         self.rb1.grid(column = 25, row = 10)
         self.rb2.grid(column = 26, row = 10)
         self.rb3.grid(column = 27, row = 10)
+        
+        # I don't know how to do the part where you display the names of all the 
+        # critter classes and the number of critters alive and killed, and the
+        # send and request buttons for each class, because the number of critter 
+        # classes is unknown. 
 
     def draw_char(self, char, color, x, y):
         """

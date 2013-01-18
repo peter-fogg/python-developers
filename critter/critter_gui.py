@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 import tkinter as tk
-import critter_main
+import critter_model
 import color
 
 EMPTY_CHAR = '.'
 
 class CritterGUI():
-    def __init__(self):
+    def __init__(self, model):
+        self.model = model
+        self.width = 15*self.model.width
+        self.height = 15*self.model.height
+        
         self.root = tk.Tk()
         self.root.grid()
 
-        self.canvas = tk.Canvas(self.root, bg="black", width=450, height=450)
+        self.canvas = tk.Canvas(self.root, bg="black", width=self.width, height=self.height)
         self.canvas.configure(background='white')
         self.canvas.grid(columnspan = 25, rowspan = 10, sticky = 'W')
 
@@ -70,11 +74,6 @@ class CritterGUI():
         self.rb2.grid(column = 26, row = 10)
         self.rb3.grid(column = 27, row = 10)
 
-        # Actually make Critters.
-        self.model = critter_main.CritterModel(30, 30)
-        for critter in critter_main.get_critters():
-            self.model.add(critter, 25)
-    
     def draw_char(self, char, color, x, y):
         """
         Displays a single char at position (x, y) on the canvas.
@@ -91,7 +90,7 @@ class CritterGUI():
         from our code.
         """
         # Clear screen
-        self.canvas.create_rectangle((0, 0, 700, 500), fill='white', outline='white')
+        self.canvas.create_rectangle((0, 0, self.width, self.height), fill='white', outline='white')
         # Draw all critters
         for x in range(self.model.width):
             for y in range(self.model.height):
@@ -101,7 +100,8 @@ class CritterGUI():
                 else:
                     self.draw_char(EMPTY_CHAR, color.BLACK, x, y)
         self.model.update()
-        self.root.after(int(5000/self.speed_var.get()), self.update)
+        # self.root.after(int(5000/self.speed_var.get()), self.update)
+        self.root.after(1000, self.update)
     
     def run(self):
         """Actually runs the GUI. Pretty straightforward."""

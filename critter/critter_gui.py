@@ -30,6 +30,7 @@ class CritterGUI():
                               length = 100, sliderlength = 10, from_=0, to=10)
         self.scale.grid(column = 1, row = 10)
 
+        #Once a move is made, the text should be updated.
         self.move_count = tk.Label(self.root, text='0 moves')
         self.move_count.grid(column = 3, row = 10)
         
@@ -52,13 +53,8 @@ class CritterGUI():
         self.request_option_label = tk.Label(self.root, text = 'Accept requests:')
         self.request_option_label.grid(column = 25, row = 9, columnspan = 3)
 
-        #Bug with the radiobuttons: Does not automatically select rb1.
-        #When hovering over the three options, all three appear to be selected.
-        #Once one of the three is selected, problem never shows up again.
         self.v=tk.IntVar()
         
-        #According to online sources the following line can solve the problem, 
-        #but it does not really work.
         self.v.set(1) 
 
         self.rb1 = tk.Radiobutton(self.root, text='Always', variable = self.v,

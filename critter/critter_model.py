@@ -4,6 +4,7 @@ import color
 import inspect
 import random
 import os
+import critter_main
 
 ## TODO: GUI
 ## networking stuff? maybe later. pickle objects
@@ -233,5 +234,5 @@ class LocationException(Exception):
     pass
 
 if __name__ == '__main__':
-    critters = get_critters()
+    critters = critter_main.get_critters()
     print(critters)

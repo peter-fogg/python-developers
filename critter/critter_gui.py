@@ -14,8 +14,7 @@ class CritterGUI():
         self.root = tk.Tk()
         self.root.grid()
 
-        self.canvas = tk.Canvas(self.root, bg="black", width=self.width, height=self.height)
-        self.canvas.configure(background='white')
+        self.canvas = tk.Canvas(self.root, bg="white", width=self.width, height=self.height)
         self.canvas.grid(columnspan = 25, rowspan = 10, sticky = 'W')
 
         self.classes_label = tk.Label(self.root, text='Classes(Alive+Kill=Total):')

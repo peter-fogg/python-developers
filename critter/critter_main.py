@@ -59,15 +59,16 @@ class CritterModel():
         # Unclean while loop, because we'll be removing any losing critters
         # as we iterate through the list.
         i = 0
-        while i < len(self.critters):
+        l = len(self.critters)
+        while i < l:
             critter1 = self.critters[i]
             # Move the critter
-            position = self.critter_positions[critter1]
-            direction = critter1.getMove(CritterInfo(position.x, position.y,
+            old_position = self.critter_positions[critter1]
+            direction = critter1.getMove(CritterInfo(old_position.x, old_position.y,
                                                      self.width, self.height,
-                                                     self.get_neighbor_func(position)))
+                                                     self.get_neighbor_func(old_position)))
             CritterModel.verify_move(direction)
-            position = self.move(direction, position)
+            position = self.move(direction, old_position)
             # Fight, if necessary
             winner = critter1
             critter2 = self.grid[position.x][position.y]
@@ -76,15 +77,20 @@ class CritterModel():
                 loser = critter1 if winner == critter2 else critter2
                 self.critter_positions[winner] = position
                 # Get the loser out of here
-                self.critter_positions.pop(loser)
-                index = self.critters.index(loser)
-                if index <= i:
-                    i -= 1
-                self.critters.pop(index)
+                if loser in self.critter_positions:
+                    index = self.critters.index(loser)
+                    if index <= i:
+                        i -= 1
+                    self.critter_positions.pop(loser)
+                    self.critters.remove(loser)
+                    l -= 1
+                else:
+                    print("this shouldn't be happening!", loser)
                 # Make sure we've got an accurate kill/alive count
                 self.critter_class_states[loser.__class__].alive -= 1
                 self.critter_class_states[winner.__class__].kills += 1
             self.grid[position.x][position.y] = winner
+            self.grid[old_position.x][old_position.y] = None
             i += 1
             
     def move(self, direction, pos):

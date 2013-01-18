@@ -54,3 +54,6 @@ class Critter():
     # @returns Nothing.
     def fightOver(self, won, oppMove, oppColor):
         pass
+    
+    def __str__(self):
+        return '%s' % (self.__class__.__qualname__)

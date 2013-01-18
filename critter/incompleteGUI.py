@@ -10,7 +10,7 @@ class CritterGUI():
         self.root = tk.Tk()
         self.root.grid()
 
-        self.canvas = tk.Canvas(self.root, bg="black", height=500, width=700)
+        self.canvas = tk.Canvas(self.root, bg="black", width=450, height=450)
         self.canvas.configure(background='white')
         self.canvas.grid(columnspan = 25, rowspan = 10, sticky = 'W')
 
@@ -23,7 +23,7 @@ class CritterGUI():
         self.speed_var = tk.IntVar()
         self.speed_var.set(10)
         self.scale = tk.Scale(self.root, variable = self.speed_var, orient='horizontal',
-                              length = 100, sliderlength = 20)
+                              length = 100, sliderlength = 10, from_=0, to=10)
         self.scale.grid(column = 1, row = 10)
 
         self.move_count = tk.Label(self.root, text='0 moves')
@@ -71,7 +71,7 @@ class CritterGUI():
         self.rb3.grid(column = 27, row = 10)
 
         # Actually make Critters.
-        self.model = critter_main.CritterModel(50, 60)
+        self.model = critter_main.CritterModel(30, 30)
         for critter in critter_main.get_critters():
             self.model.add(critter, 25)
     
@@ -81,8 +81,8 @@ class CritterGUI():
 
         TODO: make sure the positioning is actually correct (it's probably not).
         """
-        self.canvas.create_text((x*15 + 5, y*15 + 5), text=char, fill=color_to_hex(color),
-                                font=('Courier New', 15))
+        self.canvas.create_text((x*15 + 7.5, y*15 + 8.5), text=char, fill=color_to_hex(color),
+                                font=('Courier New', -15))
     
     def update(self):
         """
@@ -90,6 +90,9 @@ class CritterGUI():
         the critter simulation. This should be called by Tk, not directly
         from our code.
         """
+        # Clear screen
+        self.canvas.create_rectangle((0, 0, 700, 500), fill='white', outline='white')
+        # Draw all critters
         for x in range(self.model.width):
             for y in range(self.model.height):
                 critter = self.model.grid[x][y]

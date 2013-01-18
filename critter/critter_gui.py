@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import tkinter as tk
 import critter_model
+import critter_main
 import color
 
 EMPTY_CHAR = '.'
@@ -111,7 +112,9 @@ def color_to_hex(color):
     return '#%02x%02x%02x'.upper() % (color.r, color.g, color.b)
 
 def main():
-    c = CritterGUI()
+    model = critter_model.CritterModel(40, 30)
+    critter_main.populate_model(model)
+    c = CritterGUI(model)
     c.run()
 
 if __name__ == '__main__':

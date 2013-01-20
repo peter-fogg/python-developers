@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import tkinter as tk
 import critter_model
+import critter_main
 import color
 
 EMPTY_CHAR = '.'
@@ -14,8 +15,7 @@ class CritterGUI():
         self.root = tk.Tk()
         self.root.grid()
 
-        self.canvas = tk.Canvas(self.root, bg="black", width=self.width, height=self.height)
-        self.canvas.configure(background='white')
+        self.canvas = tk.Canvas(self.root, bg="white", width=self.width, height=self.height)
         self.canvas.grid(columnspan = 25, rowspan = 10, sticky = 'W')
 
         self.classes_label = tk.Label(self.root, text='Classes(Alive+Kill=Total):')
@@ -69,6 +69,11 @@ class CritterGUI():
         self.rb1.grid(column = 25, row = 10)
         self.rb2.grid(column = 26, row = 10)
         self.rb3.grid(column = 27, row = 10)
+        
+        # I don't know how to do the part where you display the names of all the 
+        # critter classes and the number of critters alive and killed, and the
+        # send and request buttons for each class, because the number of critter 
+        # classes is unknown. 
 
     def draw_char(self, char, color, x, y):
         """
@@ -112,7 +117,9 @@ def color_to_hex(color):
     return '#%02x%02x%02x'.upper() % (color.r, color.g, color.b)
 
 def main():
-    c = CritterGUI()
+    model = critter_model.CritterModel(40, 30)
+    critter_main.populate_model(model)
+    c = CritterGUI(model)
     c.run()
 
 if __name__ == '__main__':

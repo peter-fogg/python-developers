@@ -1,4 +1,5 @@
 import critter
+import critter_main
 import collections
 import color
 import inspect
@@ -238,5 +239,5 @@ class LocationException(Exception):
     pass
 
 if __name__ == '__main__':
-    critters = get_critters()
+    critters = critter_main.get_critters()
     print(critters)

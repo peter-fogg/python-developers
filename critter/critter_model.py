@@ -4,6 +4,7 @@ import color
 import inspect
 import random
 import os
+import pprint
 
 ## TODO: GUI
 ## networking stuff? maybe later. pickle objects
@@ -85,13 +86,14 @@ class CritterModel():
                     self.critters.remove(loser)
                     l -= 1
                 else:
-                    print("this shouldn't be happening!", loser)
+                    print("this shouldn't be happening!", i, l, self.critters)
                 # Make sure we've got an accurate kill/alive count
                 self.critter_class_states[loser.__class__].alive -= 1
                 self.critter_class_states[winner.__class__].kills += 1
             self.grid[position.x][position.y] = winner
             self.grid[old_position.x][old_position.y] = None
             i += 1
+        pprint.pprint(self.critter_class_states)
             
     def move(self, direction, pos):
         """
@@ -224,6 +226,9 @@ class ClassInfo():
         self.kills = kills
         self.alive = alive
         self.count = initial_count
+    
+    def __repr__(self):
+        return '%s %s %s' % (self.kills, self.alive, self.count)
 
 # These exceptions don't really need fancy names
 class WeaponException(Exception):

@@ -22,17 +22,16 @@ class Picture():
     # or by passing in a tuple in the format of (x, y) to indicate the size of a blank image. 
     # Example 1: Picture("image.jpg") constructs Picture from image.jpg 
     # Example 2: Picture((500, 500)) constructs Picture with a blank image of size 500*500
-    def __init__(self, param):
-        # Check if parameter is the right type, because we can't
-        # overload functions
-        if isinstance(param, tuple) and len(param) == 2:
-            self.image = Image.new('RGB', (param))
+    def __init__(self, width, height=None):
+        if height:
+            self.image = Image.new('RGB', (width, height))
             self.title = 'Picture'
-        elif isinstance(param, str):
-            self.image = Image.open(param)
-            self.title = param
+            self.width = width
+            self.height = height
         else:
-            raise TypeError('Parameter to Picture() should be a string or 2-tuple!')
+            self.image = Image.open(width) # actually filename
+            self.title = width
+            self.width, self.height = self.image.size
         # Default values for pen
         self.pen_color = (0, 0, 0)
         self.pen_position = (0, 0)
@@ -44,8 +43,7 @@ class Picture():
         self.draw = ImageDraw.Draw(self.image)
         # The main window, and associated widgets.
         self.root = None
-        self.label = None
-        self.frame = None
+        self.canvas = None
         # Threading support, so that we can show the image while
         # continuing to draw on it.
         # self.request_queue = queue.Queue()
@@ -117,14 +115,12 @@ class Picture():
                 _IS_RUNNING = True
             else:
                 self.root = tk.Toplevel()
-            self.frame = tk.Frame(self.root)
-            self.label = tk.Label(self.frame)
+            self.canvas = tk.Canvas(self.root, width=self.width, height=self.height)
             self.root.title(self.title)
-        img = ImageTk.PhotoImage(self.image)
-        self.label.configure(image=img)
-        self.label.image = img
-        self.label.pack()
-        self.frame.pack()
+            self.img = tk.PhotoImage(width=self.width, height=self.height)
+            self.canvas.pack()
+        self.img.put(self.data_to_string(self.pixel))        
+        self.canvas.create_image(0, 0, image=self.img, anchor=tk.NW)
         
     ##
     # Get the width of the picture
@@ -382,3 +378,29 @@ class Picture():
         def write_file_func():
             self.image.save(filename)
         self._submit_operation(write_file_func)
+        
+    def data_to_string(self, data):
+        """Turns a PIL pixel array into tkinter's rubbish color format."""
+        s = ''
+        for row in range(self.width):
+            s += '{'
+            for col in range(self.height):
+                s += ' ' + color_to_hex(data[row, col])
+            s += '} '
+        return s
+
+
+def color_to_hex(color):
+    return '#%02x%02x%02x'.upper() % color
+
+if __name__ == '__main__':
+    pic = Picture(400, 400)
+    pic.setPixelColor(0, 0, 255, 0, 0)
+    for col in range(1, pic.getHeight()):
+        for row in range(1, pic.getWidth()-1):
+            l = 1 if pic.getPixelRed(row-1, col-1) else 0
+            c = 1 if pic.getPixelRed(row, col-1) else 0
+            if l + c == 1:
+                pic.setPixelRed(row, col, 255)
+    pic.display()
+    input()

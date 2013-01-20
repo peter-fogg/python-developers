@@ -53,6 +53,7 @@ def display():
 def delay(millisecond):
     canvas.after(millisecond)
 
+#Show circles at initial position for 2 secs, then move diagonally. 
 def main():
     window = GUI(500, 500)
     circle1 = window.drawCircle(20, 20, 10)

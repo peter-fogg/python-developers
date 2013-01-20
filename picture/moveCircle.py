@@ -42,10 +42,10 @@ def moveby(shape, dx, dy):
         point[1] = point[1] + dy
 
 def moveto(shape, x, y):
-    [a, b] = self.vertices[0]
+    [a, b] = shape.vertices[0]
     dx = x - a
     dy = y - b
-    self.moveby(shape.my_shape, dx, dy)
+    moveby(shape, dx, dy)
 
 def display():
     canvas.update()
@@ -62,7 +62,7 @@ def main():
     delay(2000)
     for x in range(0, 470):
         moveby(circle1, 1, 1)
-        moveby(circle2, -1, 1)
+        moveto(circle2, circle2.vertices[0][0]-1, circle2.vertices[0][1]+1)
         display()
         delay(20)
     window.mainloop()

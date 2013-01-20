@@ -15,15 +15,37 @@ class GUI(Frame):
         canvas = Canvas(self, width=WIDTH, height=HEIGHT, background="white")
         canvas.grid(row=1, column=0)
 
+        global penColor
+        penColor = "red"
+
     def drawCircle(self, x, y, r):
-        circle = canvas.create_oval(x-r, y-r, x+r, y+r, fill = "black")
+        circle = Circle(x, y, r)
         return circle
 
-def moveby(shape, dx, dy):
-    canvas.move(shape, dx, dy)
+class Shape:
+    def __init__(self, vertices):
+        self.vertices = vertices
+        self.my_shape = None
 
-def moveto(shape, x1, y1, x2, y2):
-    canvas.coords(shape, x1, y1, x2, y2)
+    def getLocation(self):
+        return (self.vertices[0][0], self.vertices[0][1])
+
+class Circle(Shape):
+    def __init__(self, x, y, r):
+        Shape.__init__(self, [[x-r,y-x], [x+r, y+r]])
+        self.my_shape = canvas.create_oval(x-r, y-r, x+r, y+r, fill=penColor)
+
+def moveby(shape, dx, dy):
+    canvas.move(shape.my_shape, dx, dy)
+    for point in shape.vertices:
+        point[0] = point[0] + dx
+        point[1] = point[1] + dy
+
+def moveto(shape, x, y):
+    [a, b] = self.vertices[0]
+    dx = x - a
+    dy = y - b
+    self.moveby(shape.my_shape, dx, dy)
 
 def display():
     canvas.update()

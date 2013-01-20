@@ -17,11 +17,6 @@ _IS_RUNNING = False
 
 class Picture():
     
-    ##
-    # Constructor. Creates Picture either by passing in the path of an image file as param
-    # or by passing in a tuple in the format of (x, y) to indicate the size of a blank image. 
-    # Example 1: Picture("image.jpg") constructs Picture from image.jpg 
-    # Example 2: Picture((500, 500)) constructs Picture with a blank image of size 500*500
     def __init__(self, width, height=None):
         if height:
             self.image = Image.new('RGB', (width, height))

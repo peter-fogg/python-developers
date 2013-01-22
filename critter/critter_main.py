@@ -55,7 +55,7 @@ def quickfight(critter1, critter2, iterations=1000):
 
 def showfight(critter1, critter2):
     c = critter_model.CritterModel(20, 30)
-    populate_model(c, critter1, critter2)
+    populate_model(c)
     c.add(critter1, 25)
     c.add(critter2, 25)
     gui = critter_gui.CritterGUI(c)

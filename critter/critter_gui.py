@@ -17,6 +17,7 @@ class CritterGUI():
 
         self.canvas = tk.Canvas(self.root, bg="white", width=self.width, height=self.height)
         self.canvas.grid(columnspan = 25, rowspan = 10, sticky = 'W')
+        self.rectangle = self.canvas.create_rectangle((0, 0, self.width, self.height), fill='white', outline='white')
 
         self.classes_label = tk.Label(self.root, text='Classes(Alive+Kill=Total):')
         self.classes_label.grid(column = 25, row = 0, columnspan = 3)
@@ -91,7 +92,7 @@ class CritterGUI():
         from our code.
         """
         # Clear screen
-        self.canvas.create_rectangle((0, 0, self.width, self.height), fill='white', outline='white')
+        self.canvas.tag_raise(self.rectangle)
         # Draw all critters
         for x in range(self.model.width):
             for y in range(self.model.height):
@@ -102,7 +103,7 @@ class CritterGUI():
                     self.draw_char(EMPTY_CHAR, color.BLACK, x, y)
         self.model.update()
         # self.root.after(int(5000/self.speed_var.get()), self.update)
-        self.root.after(1000, self.update)
+        self.root.after(100, self.update)
     
     def run(self):
         """Actually runs the GUI. Pretty straightforward."""

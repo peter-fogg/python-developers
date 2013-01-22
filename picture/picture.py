@@ -377,9 +377,9 @@ class Picture():
     def data_to_string(self, data):
         """Turns a PIL pixel array into tkinter's rubbish color format."""
         s = ''
-        for row in range(self.width):
+        for col in range(self.height):
             s += '{'
-            for col in range(self.height):
+            for row in range(self.width):
                 s += ' ' + color_to_hex(data[row, col])
             s += '} '
         return s

@@ -74,7 +74,10 @@ class CritterGUI():
         # I don't know how to do the part where you display the names of all the 
         # critter classes and the number of critters alive and killed, and the
         # send and request buttons for each class, because the number of critter 
-        # classes is unknown. 
+        # classes is unknown.
+        self.chars = [[self.canvas.create_text((x*15 + 7.5, y*15+7.5), text='.', font=('Courier New', -15))
+                       for y in range(self.model.height)]
+                      for x in range(self.model.width)]
 
     def draw_char(self, char, color, x, y):
         """
@@ -82,8 +85,8 @@ class CritterGUI():
 
         TODO: make sure the positioning is actually correct (it's probably not).
         """
-        self.canvas.create_text((x*15 + 7.5, y*15 + 8.5), text=char, fill=color_to_hex(color),
-                                font=('Courier New', -15))
+        self.canvas.itemconfig(self.chars[x][y], text=char, fill=color_to_hex(color))
+        self.canvas.tag_raise(self.chars[x][y])
     
     def update(self):
         """

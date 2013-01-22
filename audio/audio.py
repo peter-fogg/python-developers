@@ -3,7 +3,7 @@ import subprocess
 import sys
 import wave
 
-# All sorts of cross-platform support.
+# All your platform are supported by us.
 WINDOWS = False
 LINUX = False
 OSX = False

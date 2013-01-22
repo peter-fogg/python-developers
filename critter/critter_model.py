@@ -7,9 +7,6 @@ import random
 import os
 import pprint
 
-## TODO: GUI
-## networking stuff? maybe later. pickle objects
-
 # Just an (x, y) pair, but more readable.
 Point = collections.namedtuple('Point', ['x', 'y'])
 
@@ -94,7 +91,7 @@ class CritterModel():
             self.grid[position.x][position.y] = winner
             self.grid[old_position.x][old_position.y] = None
             i += 1
-        pprint.pprint(self.critter_class_states)
+#        pprint.pprint(self.critter_class_states)
             
     def move(self, direction, pos):
         """

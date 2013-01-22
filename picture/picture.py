@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 import math
-# try:
-#     import threading
-# except ImportError:
-#     import dummy_threading as threading
-import queue
 try:
     import Image
     import ImageDraw
@@ -39,70 +34,10 @@ class Picture():
         # The main window, and associated widgets.
         self.root = None
         self.canvas = None
-        # Threading support, so that we can show the image while
-        # continuing to draw on it.
-        # self.request_queue = queue.Queue()
-        # self.result_queue = queue.Queue()
-        # self.thread = threading.Thread(target=self._foo)
-        #self.thread.start()
-
-    # def _thread_main(self):
-    #     """
-    #     Runs the main Tkinter loop, as well as setting up all the
-    #     necessary GUI widgets and whatnot. By running Tkinter on
-    #     a separate thread, we can keep the picture displaying
-    #     even after the user's program is finished drawing on it.
-    #     """
-    #     self.root = tk.Tk()
-    #     self.root.title('foo')
-    #     self.frame = tk.Frame(self.root, width=self.image.size[0], height=self.image.size[1])
-    #     img = ImageTk.PhotoImage(self.image)
-    #     self.label = tk.Label(self.frame, image=img)
-    #     # This line ensures that Python doesn't try to garbage collect
-    #     # our photo, due to a bug in Tk.
-    #     self.label.image = img
-    #     self.label.pack()
-    #     self.frame.pack()
-    #     def tick():
-    #         """
-    #         Called whenever Tk's main loop is idle. This lets us perform
-    #         drawing operations on the right thread.
-    #         """
-    #         try:
-    #             f, args, kwargs = self.request_queue.get_nowait()
-    #         except queue.Empty:
-    #             pass
-    #         else:
-    #             value = f(*args, **kwargs)
-    #             self.result_queue.put(value)
-    #         self.root.after_idle(tick)
-    #     tick()
-    
-    # def _submit_operation(self, f, *args, **kwargs):
-    #     """
-    #     Submits an operation to the request queue. The arguments
-    #     should consist of a function, any positional arguments
-    #     to said function, and any keyword arguments to the function.
-    #     If f returns a value, that value will be returned.
-
-    #     Any function that does something with the picture (i.e.,
-    #     saving it, drawing to it, reading from it, etc.) should
-    #     be called only by submitting it to the queue.
-    #     """
-    #     # self.request_queue.put((f, args, kwargs))
-    #     # return self.result_queue.get()
-    #     return f(*args, **kwargs)
     
     ##
     # Display the picture.
     def display(self):
-        # def display_func():
-        #     img = ImageTk.PhotoImage(self.image)
-        #     self.label.configure(image=img)
-        #     self.label.image = img
-        #     self.label.pack()
-        #     self.frame.pack()
-        # self._submit_operation(display_func)
         if self.root is None:
             global _IS_RUNNING
             if not _IS_RUNNING:

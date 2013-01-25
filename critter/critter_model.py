@@ -71,7 +71,7 @@ class CritterModel():
             # Fight, if necessary
             winner = critter1
             critter2 = self.grid[position.x][position.y]
-            if critter2 and position != old_position:
+            if critter2 and position != old_position: #Save each stone from fighting itself
                 winner = CritterModel.fight(critter1, critter2)
                 loser = critter1 if winner == critter2 else critter2
                 self.critter_positions[winner] = position

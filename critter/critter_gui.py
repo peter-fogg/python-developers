@@ -6,8 +6,11 @@ import color
 
 EMPTY_CHAR = '.'
 
+
 class CritterGUI():
     def __init__(self, model):
+        # Keep track of whether the simulation is currently running or not.
+        self.is_running = False
         self.model = model
         self.width = 15*self.model.width
         self.height = 15*self.model.height
@@ -35,18 +38,23 @@ class CritterGUI():
         self.move_count = tk.Label(self.root, text='0 moves')
         self.move_count.grid(column = 3, row = 10)
         
+        ## Here there be buttons, specify command to do actions!
+        # Go - when go, start simulation
         self.go_button = tk.Button(self.root, text = 'Go', bg = 'green',
-                                   width = 6, command = None)
+                                   width = 6, command = self.go)
         self.go_button.grid(column = 8, row = 10)
 
+        # Stop - when pressed, command should stop the simulation
         self.stop_button = tk.Button(self.root, text = 'Stop', bg = 'red',
-                                     width = 6, command = None)
+                                     width = 6, command = self.stop)
         self.stop_button.grid(column = 9, row = 10)
 
+        # Tick - simulation should still not be running, but should update by 1 move
         self.tick_button = tk.Button(self.root, text = 'Tick', bg = 'yellow',
                                      width = 6, command = None)
         self.tick_button.grid(column = 10, row = 10)
 
+        # Reset - stop running, back to beginning.
         self.reset_button = tk.Button(self.root, text = 'Reset', bg = 'blue',
                                       width = 6, command = None)
         self.reset_button.grid(column = 11, row = 10)
@@ -108,10 +116,24 @@ class CritterGUI():
         # self.root.after(int(5000/self.speed_var.get()), self.update)
         self.root.after(100, self.update)
     
+    # Executed when go is pressed.
     def run(self):
         """Actually runs the GUI. Pretty straightforward."""
-        self.update()
+        if self.is_running == True:
+            self.update()
         self.root.mainloop()
+        
+    # Run when go button is pressed
+    def go(self):
+        self.is_running = True
+        self.run()
+     
+    # It doesn't stop yet
+    def stop(self):
+        # Right now this just quits, but we want it to stop updating.
+        # self.root.quit()
+       self.is_running = False
+
 
 def color_to_hex(color):
     """

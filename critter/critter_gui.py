@@ -147,6 +147,7 @@ class CritterGUI():
     # Executed when tick is pressed
     def tick(self):
         """Move all critters by 1 step."""
+        self.is_running = False
         self.model.update()
         self.display()
         self.incrementMove()

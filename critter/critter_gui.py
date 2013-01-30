@@ -35,8 +35,9 @@ class CritterGUI():
         self.scale.grid(column = 1, row = 10)
 
         #Once a move is made, the text should be updated.
-        self.move_count = tk.Label(self.root, text='0 moves')
-        self.move_count.grid(column = 3, row = 10)
+        self.move_count = 0
+        self.move_count_label = tk.Label(self.root, text='0 move')
+        self.move_count_label.grid(column = 3, row = 10)
         
         ## Here there be buttons, specify command to do actions!
         # Go - when go, start simulation
@@ -51,41 +52,29 @@ class CritterGUI():
 
         # Tick - simulation should still not be running, but should update by 1 move
         self.tick_button = tk.Button(self.root, text = 'Tick', bg = 'yellow',
-                                     width = 6, command = None)
+                                     width = 6, command = self.tick)
         self.tick_button.grid(column = 10, row = 10)
 
         # Reset - stop running, back to beginning.
         self.reset_button = tk.Button(self.root, text = 'Reset', bg = 'blue',
-                                      width = 6, command = None)
+                                      width = 6, command = self.reset)
         self.reset_button.grid(column = 11, row = 10)
 
-        self.request_option_label = tk.Label(self.root, text = 'Accept requests:')
-        self.request_option_label.grid(column = 25, row = 9, columnspan = 3)
+        self.critter_classes = critter_main.get_critters()
+        self.num_classes = len(self.critter_classes)
+        self.class_state_labels = {}
+        ROW=3
+        for x in range(self.num_classes):
+            self.class_state_labels.update({self.critter_classes[x].__name__:
+                                    tk.Label(self.root, text=self.critter_classes[x].__name__+": 25+0=25")})
+            self.class_state_labels[self.critter_classes[x].__name__].grid(column=25, row=ROW)
+            ROW=ROW+1
 
-        self.v=tk.IntVar()
-        
-        self.v.set(1) 
-
-        self.rb1 = tk.Radiobutton(self.root, text='Always', variable = self.v,
-                                  value = 1, command = None)
-        
-        self.rb2 = tk.Radiobutton(self.root, text='Ask', variable = self.v,
-                                  value = 2, command = None)
-        
-        self.rb3 = tk.Radiobutton(self.root, text='Never', variable = self.v,
-                                  value = 3, command = None)
-
-        self.rb1.grid(column = 25, row = 10)
-        self.rb2.grid(column = 26, row = 10)
-        self.rb3.grid(column = 27, row = 10)
-        
-        # I don't know how to do the part where you display the names of all the 
-        # critter classes and the number of critters alive and killed, and the
-        # send and request buttons for each class, because the number of critter 
-        # classes is unknown.
-        self.chars = [[self.canvas.create_text((x*15 + 7.5, y*15+7.5), text='.', font=('Courier New', -15))
+        self.chars = [[self.canvas.create_text((x*15 + 7.5, y*15+7.5), text='', font=('Courier New', -15))
                        for y in range(self.model.height)]
                       for x in range(self.model.width)]
+        
+        self.display()
 
     def draw_char(self, char, color, x, y):
         """
@@ -95,13 +84,8 @@ class CritterGUI():
         """
         self.canvas.itemconfig(self.chars[x][y], text=char, fill=color_to_hex(color))
         self.canvas.tag_raise(self.chars[x][y])
-    
-    def update(self):
-        """
-        Updates the GUI with the appropriate characters and colors from
-        the critter simulation. This should be called by Tk, not directly
-        from our code.
-        """
+
+    def display(self):
         # Clear screen
         self.canvas.tag_raise(self.rectangle)
         # Draw all critters
@@ -112,28 +96,46 @@ class CritterGUI():
                     self.draw_char(critter.getChar(), critter.getColor(), x, y)
                 else:
                     self.draw_char(EMPTY_CHAR, color.BLACK, x, y)
-        self.model.update()
-        # self.root.after(int(5000/self.speed_var.get()), self.update)
-        self.root.after(100, self.update)
+    
+    def update(self):
+        """
+        Updates the GUI with the appropriate characters and colors from
+        the critter simulation. This should be called by Tk, not directly
+        from our code.
+        """
+        if self.is_running == True:
+            self.display()
+            self.incrementMove()
+            self.model.update()
+            # self.root.after(int(5000/self.speed_var.get()), self.update)
+            self.root.after(100, self.update)
+
+    def incrementMove(self):
+        self.move_count=self.move_count+1
+        self.move_count_label.config(text=str(self.move_count)+' moves')
     
     # Executed when go is pressed.
-    def run(self):
-        """Actually runs the GUI. Pretty straightforward."""
-        if self.is_running == True:
-            self.update()
-        self.root.mainloop()
-        
-    # Run when go button is pressed
     def go(self):
+        """Actually runs the GUI. Pretty straightforward."""
         self.is_running = True
-        self.run()
+        self.update()
      
     # It doesn't stop yet
     def stop(self):
-        # Right now this just quits, but we want it to stop updating.
-        # self.root.quit()
-       self.is_running = False
+        # Stop updating.
+        self.is_running = False
 
+    def tick(self):
+        self.display()
+        self.incrementMove()
+        self.model.update()
+
+    def reset(self):
+        self.model = critter_model.CritterModel(40, 30)
+        critter_main.populate_model(self.model)
+        self.display()
+        self.move_count=0
+        self.move_count_label.config(text='0 move')
 
 def color_to_hex(color):
     """
@@ -146,7 +148,6 @@ def main():
     model = critter_model.CritterModel(40, 30)
     critter_main.populate_model(model)
     c = CritterGUI(model)
-    c.run()
 
 if __name__ == '__main__':
     main()

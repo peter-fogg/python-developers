@@ -219,8 +219,8 @@ class AbstractImage(object):
 
     def clone(self):
        """Return a copy of this image"""
-	     newI = AbstractImage(imobj=self.im)
-	     return newI
+       newI = AbstractImage(imobj=self.im)
+       return newI
         
     def getHeight(self):
         """Return the height of the image"""
@@ -308,7 +308,7 @@ class ListImage(AbstractImage):
 # Example program  Read in an image and calulate the negative.
 if __name__ == '__main__':
     win = ImageWin("My Window",1000,1000)
-    oImage = FileImage('tumblr_ljm3m8dfun1qzt4vjo1_500.gif')
+    oImage = FileImage('rochester_ny.gif')
     print(oImage.getWidth(), oImage.getHeight())
     oImage.draw(win)
     myImage = oImage.copy()
@@ -323,6 +323,6 @@ if __name__ == '__main__':
     myImage.setPosition(myImage.getWidth()+1,0)
     myImage.draw(win)
     print(win.getMouse())
-    myImage.save('/Users/bmiller/tmp/testfoo.jpg')
+    # myImage.save('/Users/bmiller/tmp/testfoo.jpg')
     print(myImage.toList())
     win.exitOnClick()

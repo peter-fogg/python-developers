@@ -59,7 +59,7 @@ def showfight(critter1, critter2):
     c.add(critter1, 25)
     c.add(critter2, 25)
     gui = critter_gui.CritterGUI(c)
-    gui.run()
+    gui.start()
 
 def get_class(crittername, critterlist):
     """

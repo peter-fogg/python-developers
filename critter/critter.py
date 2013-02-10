@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-import inspect
-import os
 
 # Constants for movement.
 NORTH = -2

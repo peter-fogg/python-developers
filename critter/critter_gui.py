@@ -113,7 +113,7 @@ class CritterGUI():
             self.incrementMove()
             self.changeClassState()
             # self.root.after(int(5000/self.speed_var.get()), self.update)
-            self.root.after(100, self.update)
+            self.root.after(1000, self.update)
 
     def incrementMove(self):
         """
@@ -162,6 +162,9 @@ class CritterGUI():
         self.display()
         self.move_count=0
         self.move_count_label.config(text='0 move')
+
+    def start(self):
+        self.root.mainloop()
 
 def color_to_hex(color):
     """

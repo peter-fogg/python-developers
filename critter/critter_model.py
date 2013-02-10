@@ -71,7 +71,7 @@ class CritterModel():
             # Fight, if necessary
             winner = critter1
             critter2 = self.grid[position.x][position.y]
-            if critter2 and position != old_position: #Save each stone from fighting itself
+            if critter2 and position != old_position and critter1 != critter2: #Save each stone from fighting itself
                 winner = CritterModel.fight(critter1, critter2)
                 loser = critter1 if winner == critter2 else critter2
                 self.critter_positions[winner] = position
@@ -91,7 +91,6 @@ class CritterModel():
             self.grid[position.x][position.y] = winner
             self.grid[old_position.x][old_position.y] = None
             i += 1
-#        pprint.pprint(self.critter_class_states)
             
     def move(self, direction, pos):
         """
@@ -113,7 +112,7 @@ class CritterModel():
         elif direction == critter.SOUTHWEST:
             return Point((pos.x + 1) % self.width, (pos.y + 1) % self.height)
         elif direction == critter.SOUTHEAST:
-            return Point((pos.x - 1) % self.width, (pos.y - 1) % self.height)
+            return Point((pos.x - 1) % self.width, (pos.y + 1) % self.height)
         else:
             return pos
     

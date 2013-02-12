@@ -1,4 +1,5 @@
 from tkinter import *
+import math
 
 class Picture(Frame):
     def __init__(self, param):
@@ -97,34 +98,34 @@ class Picture(Frame):
         return penWidth
 
     def drawOval(self, x, y, hrad, vrad):
-        return Oval(x, y, hrad, vrad)
+        return Oval(x, y, hrad, vrad, False)
 
-    def drawOvalFill(self, x, y, hrad, vrad, fill):
-        return Oval(x, y, hrad, vrad, fill)
+    def drawOvalFill(self, x, y, hrad, vrad):
+        return Oval(x, y, hrad, vrad, True)
 
     def drawCircle(self, x, y, r):
-        return Circle(x, y, r)
+        return Circle(x, y, r, False)
 
-    def drawCircleFill(self, x, y, r, fill):
-        return Circle(x, y, r, fill)
+    def drawCircleFill(self, x, y, r):
+        return Circle(x, y, r, True)
 
     def drawRect(self, x, y, w, h):
-        return Rectangle(x, y, w, h)
+        return Rectangle(x, y, w, h, False)
 
-    def drawRectFill(self, x, y, w, h, fill):
-        return Rectangle(x, y, w, h, fill)
+    def drawRectFill(self, x, y, w, h):
+        return Rectangle(x, y, w, h, True)
 
     def drawSquare(self, x, y, side):
-        return Square(x, y, side)
+        return Square(x, y, side, False)
 
-    def drawSquare(self, x, y, side, fill):
-        return Square(x, y, side, fill)
+    def drawSquare(self, x, y, side):
+        return Square(x, y, side, True)
 
     def drawPolygon(self, vertices):
-        return Polygon(vertices)
+        return Polygon(vertices, False)
 
-    def drawPolygonFill(self, vertices, fill):
-        return Polygon(vertices, fill)
+    def drawPolygonFill(self, vertices):
+        return Polygon(vertices, True)
 
     def drawLine(self, x1, y1, x2, y2):
         return Line(x1, y1, x2, y2)
@@ -171,11 +172,14 @@ class Shape:
         self.moveby(dx, dy)
 
 class Rectangle(Shape):
-    def __init__(self, x, y, w, h, fill=None):
-        if fill=="FILL":
-            FILL=fillColor
+    def __init__(self, x, y, w, h, fill=False):
         Shape.__init__(self, [[x, y], [x+w, y+h]])
-        self.my_shape = canvas.create_rectangle(x, y, x+w, y+h, fill=FILL,
+        if fill==True:
+            self.my_shape = canvas.create_rectangle(x, y, x+w, y+h, fill=fillColor,
+                                                outline=outlineColor,
+                                                width=penWidth)
+        else:
+            self.my_shape = canvas.create_rectangle(x, y, x+w, y+h, 
                                                 outline=outlineColor,
                                                 width=penWidth)
 
@@ -186,12 +190,15 @@ class Square(Rectangle):
         Rectangle.__init__(self, x, y, x+side, y+side, fill)
 
 class Oval(Shape):
-    def __init__(self, x, y, hrad, vrad, fill=None):
-        if fill=="FILL":
-            FILL=fillColor
+    def __init__(self, x, y, hrad, vrad, fill=False):
         Shape.__init__(self,[[x-hrad, y-vrad], [x+hrad, y+vrad]])
-        self.my_shape = canvas.create_oval(x-hrad, y-vrad, x+hrad, y+vrad,
-                                           fill=FILL, outline=outlineColor,
+        if fill==True:
+            self.my_shape = canvas.create_oval(x-hrad, y-vrad, x+hrad, y+vrad,
+                                           fill=fillColor, outline=outlineColor,
+                                           width=penWidth)
+        else:
+            self.my_shape = canvas.create_oval(x-hrad, y-vrad, x+hrad, y+vrad,
+                                           outline=outlineColor,
                                            width=penWidth)
 
 class Circle(Oval):
@@ -199,11 +206,14 @@ class Circle(Oval):
         Oval.__init__(self, x, y, r, r, fill)
 
 class Polygon(Shape):
-    def __init__(self, vertices, fill=None):
-        if fill=="FILL":
-            FILL=fillColor
+    def __init__(self, vertices, fill=False):
         Shape.__init__(self, vertices)
-        self.my_shape = canvas.create_polygon(vertices, fill=FILL,
+        if fill==True:
+            self.my_shape = canvas.create_polygon(vertices, fill=fillColor,
+                                              outline=outlineColor,
+                                              width=penWidth)
+        else:
+            self.my_shape = canvas.create_polygon(vertices, 
                                               outline=outlineColor,
                                               width=penWidth)
 

@@ -1,4 +1,4 @@
-from animate import Picture
+from newPicture import Picture
 
 def p(a) :
     y=0

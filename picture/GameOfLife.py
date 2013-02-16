@@ -63,7 +63,7 @@ def main(w,h) :
     u = ""
     while u == "" :   
         p(a)
-        u = input("Press enter to continue, any other key to exit")
+        u = input("Press enter to continue, any other key to exit ")
         update(a,b)
         a,b = b,a
         

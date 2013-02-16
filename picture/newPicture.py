@@ -98,40 +98,40 @@ class Picture(Frame):
         return penWidth
 
     def drawOval(self, x, y, hrad, vrad):
-        return Oval(x, y, hrad, vrad, False)
+        return Oval(x + 3, y + 3, hrad, vrad, False)
 
     def drawOvalFill(self, x, y, hrad, vrad):
-        return Oval(x, y, hrad, vrad, True)
+        return Oval(x + 3, y + 3, hrad, vrad, True)
 
     def drawCircle(self, x, y, r):
-        return Circle(x, y, r, False)
-
+        return Circle(x + 3, y + 3, r, False)
+    
     def drawCircleFill(self, x, y, r):
-        return Circle(x, y, r, True)
+        return Circle(x + 3, y + 3, r, True)
 
     def drawRect(self, x, y, w, h):
-        return Rectangle(x, y, w, h, False)
-
+        return Rectangle(x + 3, y + 3, w, h, False)
+    
     def drawRectFill(self, x, y, w, h):
-        return Rectangle(x, y, w, h, True)
+        return Rectangle(x + 3, y + 3, w, h, True)
 
     def drawSquare(self, x, y, side):
-        return Square(x, y, side, False)
+        return Square(x + 3, y + 3, side, False)
 
     def drawSquare(self, x, y, side):
-        return Square(x, y, side, True)
+        return Square(x + 3, y + 3, side, True)
 
     def drawPolygon(self, vertices):
-        return Polygon(vertices, False)
+        return Polygon(map(lambda x: x + 3, vertices), False)
 
     def drawPolygonFill(self, vertices):
-        return Polygon(vertices, True)
+        return Polygon(map(lambda x: x + 3, vertices), True)
 
     def drawLine(self, x1, y1, x2, y2):
-        return Line(x1, y1, x2, y2)
+        return Line(x1 + 3, y1 + 3, x2 + 3, y2 + 3)
 
     def drawText(self, x, y, TEXT, font_name, font_size):
-        return Text(x, y, TEXT, font_name, font_size)
+        return Text(x + 3, y + 3, TEXT, font_name, font_size)
 
     def changeCanvasSize(self, newWidth, newHeight):
         canvas.config(width=newWidth, height=newHeight)
@@ -143,7 +143,7 @@ class Picture(Frame):
         canvas.after(millisecond)
 
     def pixel(self, x, y, color):
-        canvas.create_line(x, y, x+1, y+1, fill=color_to_hex(color))
+        canvas.create_line(x + 3, y + 3, x + 4, y + 4, fill=color_to_hex(color))
 
 class Shape:
     def __init__(self, vertices):

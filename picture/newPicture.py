@@ -1,10 +1,15 @@
 from tkinter import *
 import math
 
-class Picture(Frame):
-    def __init__(self, param):
-        Frame.__init__(self, None)
-        self.grid()
+class Picture():
+    def __init__(self, param, TITLE=None):
+        self.root = Tk()
+        self.root.iconbitmap(default='favicon.ico')
+        if TITLE!=None:
+            self.root.wm_title(TITLE)
+        
+        self.frame = Frame(self.root, None, borderwidth=0)
+        self.frame.grid()
 
         global canvas
         # Check if parameter is the right type, because we can't

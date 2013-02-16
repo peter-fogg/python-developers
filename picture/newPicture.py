@@ -11,16 +11,18 @@ class Picture(Frame):
         # overload functions
         if isinstance(param, tuple) and len(param) == 2:
             canvas = Canvas(self, width=param[0], height=param[1],
-                            background="white")
+                            background="white", bd=0, 
+                            highlightthickness=0)
             canvas.grid()
         elif isinstance(param, str):
             self.image = PhotoImage(file=param)
             canvas = Canvas(self, width=self.image.width(),
-                            height=self.image.height())
+                            height=self.image.height(), bd=0, 
+                            highlightthickness=0)
             canvas.grid()
-            canvas.create_image(0, 0, image=self.image, anchor=NW)
+            canvas.create_image(0, 0, image=self.image)
         else:
-            raise TypeError('Parameter to AnimatePicture() should be' +
+            raise TypeError('Parameter to Picture() should be' +
                         'string of a .gif/pgm/ppm file name or 2-tuple!')
 
         global outlineColor

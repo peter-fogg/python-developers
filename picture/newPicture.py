@@ -1,10 +1,32 @@
 from tkinter import *
 import math
+import sys
 
 class Picture():
     def __init__(self, param, TITLE=None):
         self.root = Tk()
-        self.root.iconbitmap(default='favicon.ico')
+
+##        iconName = 'favicon'
+##
+##        windowSystem = self.root.tk.call("tk", "windowingsystem")
+##        if windowSystem == "win32": # Windows
+##            iconName += ".ico"
+######        elif windowSystem == "x11": # Unix
+######            iconName = "@" + iconName + ".xbm"
+####        elif 'linux' in sys.platform:
+####            iconName = "@" + iconName + ".xbm"
+##        elif 'darwin' in sys.platform:
+##            iconName += ".xbm"
+##        try:
+##            self.root.iconbitmap(iconName)
+##        except TclError:
+##            pass
+
+        
+##        self.root.wm_iconbitmap(default='favicon.ico')
+        
+##        icon = PhotoImage(file="favicon.gif")
+##        self.root.tk.call("wm", "iconphoto", self.root, "-default", icon)
         if TITLE!=None:
             self.root.wm_title(TITLE)
         
@@ -15,13 +37,13 @@ class Picture():
         # Check if parameter is the right type, because we can't
         # overload functions
         if isinstance(param, tuple) and len(param) == 2:
-            canvas = Canvas(self, width=param[0], height=param[1],
+            canvas = Canvas(self.root, width=param[0], height=param[1],
                             background="white", bd=0, 
                             highlightthickness=0)
             canvas.grid()
         elif isinstance(param, str):
             self.image = PhotoImage(file=param)
-            canvas = Canvas(self, width=self.image.width(),
+            canvas = Canvas(self.root, width=self.image.width(),
                             height=self.image.height(), bd=0, 
                             highlightthickness=0)
             canvas.grid()
@@ -29,7 +51,7 @@ class Picture():
         else:
             raise TypeError('Parameter to Picture() should be' +
                         'string of a .gif/pgm/ppm file name or 2-tuple!')
-
+        
         global outlineColor
         outlineColor = "black"
 
@@ -242,3 +264,73 @@ class Text(Shape):
 def color_to_hex(color):
     return '#%02x%02x%02x'.upper() % (color[0], color[1], color[2])
 
+
+
+def p(a) :
+    y=0
+    for row in a :
+        x=0
+        for i in row :
+            if i == 0:
+                grid[x][y].changeFillColor((0,0,0))
+            else :
+                grid[x][y].changeFillColor((255,0,0))
+            x=x+1
+        y=y+1
+    animate.display()
+
+## update b given a using game of life rules
+def update(a,b) :
+    h = len(a)
+    w = len(a[0])
+    for row in range(h) :
+        for col in range(w) :
+            live = 0
+            for r in range(-1,2) :
+                for c in range(-1,2) :
+                    live = live + a[(row+r)%h][(col+c)%w]
+            live = live - a[row][col]
+            if live < 2 or live > 3 :
+                b[row][col] = 0
+            elif live == 2 :
+                b[row][col] = a[row][col]
+            elif live == 3 :
+                b[row][col] = 1
+            else :
+                print("Live count is wrong")
+                
+
+## initialize 2d array of zeroes of given size
+def init2d(w,h) :
+    a = []
+    for i in range(h) :
+        a.append([0]*w)
+    return a
+
+## main
+def main(w,h) :
+    global animate
+    animate = Picture((w*10, h*10), "GAME OF LIFE")
+    animate.setFillColor((0, 0, 0))
+    
+    global grid
+    grid = [[animate.drawRectFill(x*10, y*10, 10, 10) for y in range(h)]for x in range(w)]
+        
+    a = init2d(w,h)
+    b = init2d(w,h)
+    
+    # Glider pattern
+    a[1][1] = 1
+    a[2][2] = 1
+    a[3][0] = 1
+    a[3][1] = 1
+    a[3][2] = 1
+    
+    u = ""
+    while u == "" :   
+        p(a)
+        u = input("Press enter to continue, any other key to exit")
+        update(a,b)
+        a,b = b,a
+        
+main(80,50)

@@ -23,7 +23,7 @@ class Picture():
             self.width = width
             self.height = height
         else:
-            self.image = Image.open(width) # actually filename
+            self.image = Image.open(width).convert('RGB') # actually filename
             self.title = width
             self.width, self.height = self.image.size
         # Default values for pen
@@ -54,6 +54,7 @@ class Picture():
             self.canvas.pack()
         self.img.put(self.data_to_string())        
         self.canvas.create_image(0, 0, image=self.img, anchor=tk.NW)
+        self.root.update()
         
     def getWidth(self):
         'Returns the width of the picture.'
@@ -233,11 +234,17 @@ class Picture():
         
     def data_to_string(self):
         "Turns a PIL pixel array into tkinter's rubbish color format."
+        rgb = isinstance(self.pixel[0, 0], tuple)
         s = ''
         for col in xrange(self.height):
             s += '{'
             for row in xrange(self.width):
-                s += ' ' + color_to_hex(self.pixel[row, col])
+                if rgb:
+                    s += ' ' + color_to_hex(self.pixel[row, col])
+                else:
+                    s += ' ' + '#%02x%02x%02x' % (self.pixel[row, col],
+                                                  self.pixel[row, col],
+                                                  self.pixel[row, col])
             s += '} '
         return s
 
@@ -255,5 +262,5 @@ if __name__ == '__main__':
             c = 1 if pic.getPixelRed(row, col-1) else 0
             if l + c == 1:
                 pic.setPixelRed(row, col, 255)
-    pic.display()
-    input()
+        pic.display()
+    raw_input()

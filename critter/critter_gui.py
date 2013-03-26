@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import tkinter as tk
+import threading
 import critter_model
 import critter_main
 import color
@@ -157,7 +158,7 @@ class CritterGUI():
     def reset(self):
         """Stop simulation. Change critter model."""
         self.is_running = False
-        self.model = critter_model.CritterModel(40, 30)
+        self.model = critter_model.CritterModel(40, 30, threading.Lock())
         critter_main.populate_model(self.model)
         self.display()
         self.move_count=0
@@ -174,7 +175,7 @@ def color_to_hex(color):
     return '#%02x%02x%02x'.upper() % (color.r, color.g, color.b)
 
 def main():
-    model = critter_model.CritterModel(40, 30)
+    model = critter_model.CritterModel(40, 30, threading.Lock())
     critter_main.populate_model(model)
     c = CritterGUI(model)
 

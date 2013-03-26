@@ -6,6 +6,7 @@ import critter_model
 import critter_gui
 import inspect
 import os
+import threading
 
 import tiger, elephant, stone, mouse, chameleon
 
@@ -45,7 +46,7 @@ def quickfight(critter1, critter2, iterations=1000):
     Fight critter1 and critter2 with the standard classes,
     without showing a GUI. Prints the results at the end.
     """
-    c = critter_model.CritterModel(50, 60)
+    c = critter_model.CritterModel(50, 60, threading.Lock())
     populate_model(c)
     c.add(critter1, 25)
     c.add(critter2, 25)
@@ -54,7 +55,7 @@ def quickfight(critter1, critter2, iterations=1000):
     print(format_results(c.results()))
 
 def showfight(critter1, critter2):
-    c = critter_model.CritterModel(20, 30)
+    c = critter_model.CritterModel(20, 30, threading.Lock())
     populate_model(c)
     c.add(critter1, 25)
     c.add(critter2, 25)

@@ -15,11 +15,11 @@ CritterInfo = collections.namedtuple('CritterInfo', ['x', 'y', 'width', 'height'
 
 class CritterModel():
     """
-    The main Critter simulation. Takes care of all the logic of Critter fights,
-    and will eventually handle the GUI as well.
+    The main Critter simulation. Takes care of all the logic of
+    Critter fights.
     """
     
-    def __init__(self, width, height):
+    def __init__(self, width, height, list_lock):
         self.width = width
         self.height = height
         self.critters = []
@@ -28,12 +28,14 @@ class CritterModel():
         self.critter_positions = {}
         # A map of critter classes to the number alive of that class.
         self.critter_class_states = {}
-        self.grid = [[None for x in range(height)] for x in range(width)]
+        self.grid = [[None for x in range(height)] for y in range(width)]
+        # Make sure nothing bad happens due to concurrent list access.
+        self.list_lock = list_lock
 
     def add(self, critter, num):
         """
-        Adds a particular critter type num times. The critter should be
-        a class, not an instantiated critter.
+        Adds a particular critter type num times. The critter should
+        be a class, not an instantiated critter.
         """
         if critter not in self.critter_class_states:
             self.critter_class_states[critter] = ClassInfo(initial_count=num)
@@ -48,10 +50,10 @@ class CritterModel():
     
     def update(self):
         """
-        Takes care of updating all Critters. For each Critter, it firsts
-        moves. If the position it moves to is occupied, the two critters
-        fight, and the loser is destroyed while the winner moves into the
-        position. Eventually, the GUI will be updated here.
+        Takes care of updating all Critters. For each Critter, it
+        firsts moves. If the position it moves to is occupied, the two
+        critters fight, and the loser is destroyed while the winner
+        moves into the position.
         """
         self.move_count += 1
         random.shuffle(self.critters)
@@ -71,31 +73,38 @@ class CritterModel():
             # Fight, if necessary
             winner = critter1
             critter2 = self.grid[position.x][position.y]
-            if critter2 and position != old_position and critter1 != critter2: #Save each stone from fighting itself
+            # critter2 = None
+            # for c, p in self.critter_positions.items():
+            #     if p == position:
+            #         critter2 = c
+            if critter2 and position != old_position and critter1 != critter2: # Save each stone from fighting itself
                 winner = CritterModel.fight(critter1, critter2)
                 loser = critter1 if winner == critter2 else critter2
                 self.critter_positions[winner] = position
                 # Get the loser out of here
-                if loser in self.critter_positions:
-                    index = self.critters.index(loser)
-                    if index <= i:
-                        i -= 1
-                    self.critter_positions.pop(loser)
-                    self.critters.remove(loser)
-                    l -= 1
-                else:
-                    print("this shouldn't be happening!", i, l, self.critters)
-                # Make sure we've got an accurate kill/alive count
-                self.critter_class_states[loser.__class__].alive -= 1
-                self.critter_class_states[winner.__class__].kills += 1
-            self.grid[position.x][position.y] = winner
+                with self.list_lock:
+                    if loser in self.critter_positions:
+                        index = self.critters.index(loser)
+                        if index <= i:
+                            i -= 1
+                        self.critter_positions.pop(loser)
+                        self.critters.remove(loser)
+                        l -= 1
+                    # BUG: this only happens when loser is critter2
+                    else:
+                        print("this shouldn't be happening!", i, l, direction, winner, loser, critter1)
+                    # Make sure we've got an accurate kill/alive count
+                    self.critter_class_states[loser.__class__].alive -= 1
+                    self.critter_class_states[winner.__class__].kills += 1
+            # Update positions
             self.grid[old_position.x][old_position.y] = None
+            self.grid[position.x][position.y] = winner
             i += 1
             
     def move(self, direction, pos):
         """
-        Returns the new position after moving in direction. This assumes
-        that (0, 0) is the top-left.
+        Returns the new position after moving in direction. This
+        assumes that (0, 0) is the top-left.
         """
         if direction == critter.NORTH:
             return Point(pos.x, (pos.y - 1) % self.height)
@@ -119,7 +128,8 @@ class CritterModel():
     def fight(critter1, critter2):
         """
         Force poor innocent Critters to fight to the death for the
-        entertainment of Oberlin students. Returns the glorious victor.
+        entertainment of Oberlin students. Returns the glorious
+        victor.
         """
         weapon1 = critter1.fight(critter2.getChar())
         weapon2 = critter2.fight(critter1.getChar())
@@ -146,7 +156,10 @@ class CritterModel():
                 return critter2
 
     def verify_weapon(weapon):
-        "Make sure students are using the right weapons. If not, throws an exception."
+        """
+        Make sure students are using the right weapons. If not, throws
+        an exception.
+        """
         if weapon not in (critter.ROAR, critter.POUNCE, critter.SCRATCH):
             raise WeaponException("Critter weapon must be ROAR, POUNCE, or SCRATCH!")
     
@@ -156,7 +169,10 @@ class CritterModel():
             raise LocationException("Don't move diagonally! %s" % move)
 
     def verify_location(location):
-        "Make sure students are using the right locations. If not, throws an exception."
+        """
+        Make sure students are using the right locations. If not,
+        throws an exception.
+        """
         if location not in (critter.NORTH, critter.NORTHEAST, critter.NORTHWEST,
                             critter.SOUTH, critter.SOUTHEAST, critter.SOUTHWEST,
                             critter.EAST, critter.WEST, critter.CENTER):
@@ -164,9 +180,9 @@ class CritterModel():
 
     def random_location(self):
         """
-        Calculate a random location for a Critter to be placed. This is not
-        guaranteed to terminate by any means, but practically we (probably)
-        don't need to be concerned.
+        Calculate a random location for a Critter to be placed. This
+        is not guaranteed to terminate by any means, but practically
+        we (probably) don't need to be concerned.
 
         Returns a 2-tuple of integers.
         """
@@ -216,8 +232,8 @@ class CritterModel():
             
 class ClassInfo():
     """
-    This would be a named tuple, but they're immutable and that's somewhat
-    unwieldy for this particular case.
+    This would be a named tuple, but they're immutable and that's
+    somewhat unwieldy for this particular case.
     """
     def __init__(self, kills=0, alive=0, initial_count=0):
         self.kills = kills
@@ -233,7 +249,3 @@ class WeaponException(Exception):
 
 class LocationException(Exception):
     pass
-
-if __name__ == '__main__':
-    critters = critter_main.get_critters()
-    print(critters)

@@ -3,7 +3,7 @@
 
 There are a lot more files in this version than in the old one.
 
-* <critter>.py -- This should be pretty obvious.
+* (critter).py -- This should be pretty obvious.
 * color.py -- This defines a color object (a triple of r, g, b), and some constants for commonly-used colors.
 * critter_model.py -- The critter simulation itself. This doesn't handle any of the GUI or user interface stuff, just the fighting/moving/etc.
 * critter_gui.py -- Handles all the drawing and stuff. Depends solely on a CritterModel object.

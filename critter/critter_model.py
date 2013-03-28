@@ -39,7 +39,7 @@ class CritterModel():
         """
         if critter not in self.critter_class_states:
             self.critter_class_states[critter] = ClassInfo(initial_count=num)
-        self.critter_class_states[critter].alive = num
+        self.critter_class_states[critter].alive += num
         for i in range(num):
             args = CritterModel.create_parameters(critter)
             c = critter(*args)
@@ -48,6 +48,28 @@ class CritterModel():
             self.critter_positions[c] = pos
             self.grid[pos.x][pos.y] = c
     
+    def reset(self, num_critters):
+        '''
+        Resets the model, clearing out the whole board and
+        repopulating it with num_critters of the same Critter types.
+        '''
+        self.grid = [[None for x in range(self.height)] for y in range(self.width)]
+        self.critter_positions = {}
+        self.critters = []
+        self.move_count = 0
+        new_states = {}
+        for critter_class in self.critter_class_states.keys():
+            new_states[critter_class] = ClassInfo(initial_count=num_critters)
+            new_states[critter_class].alive += num_critters
+            for i in range(num_critters):
+                args = CritterModel.create_parameters(critter_class)
+                c = critter_class(*args)
+                self.critters.append(c)
+                pos = self.random_location()
+                self.critter_positions[c] = pos
+                self.grid[pos.x][pos.y] = c
+        self.critter_class_states = new_states
+
     def update(self):
         """
         Takes care of updating all Critters. For each Critter, it
@@ -73,26 +95,18 @@ class CritterModel():
             # Fight, if necessary
             winner = critter1
             critter2 = self.grid[position.x][position.y]
-            # critter2 = None
-            # for c, p in self.critter_positions.items():
-            #     if p == position:
-            #         critter2 = c
             if critter2 and position != old_position and critter1 != critter2: # Save each stone from fighting itself
                 winner = CritterModel.fight(critter1, critter2)
                 loser = critter1 if winner == critter2 else critter2
                 self.critter_positions[winner] = position
                 # Get the loser out of here
                 with self.list_lock:
-                    if loser in self.critter_positions:
-                        index = self.critters.index(loser)
-                        if index <= i:
-                            i -= 1
-                        self.critter_positions.pop(loser)
-                        self.critters.remove(loser)
-                        l -= 1
-                    # BUG: this only happens when loser is critter2
-                    else:
-                        print("this shouldn't be happening!", i, l, direction, winner, loser, critter1)
+                    index = self.critters.index(loser)
+                    if index <= i:
+                        i -= 1
+                    self.critter_positions.pop(loser)
+                    self.critters.remove(loser)
+                    l -= 1
                     # Make sure we've got an accurate kill/alive count
                     self.critter_class_states[loser.__class__].alive -= 1
                     self.critter_class_states[winner.__class__].kills += 1

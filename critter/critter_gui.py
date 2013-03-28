@@ -24,16 +24,16 @@ class CritterGUI():
         self.canvas.grid(columnspan = 25, rowspan = 10, sticky = 'W')
         self.rectangle = self.canvas.create_rectangle((0, 0, self.width, self.height), fill='white', outline='white')
 
-        #Class states.
-        self.classes_label = tk.Label(self.root, text='Classes(Alive+Kill=Total):')
+        # Class states.
+        self.classes_label = tk.Label(self.root, text='Classes (Alive + Kill = Total):')
         self.classes_label.grid(column = 25, row = 0, columnspan = 3)
-        self.critter_classes = critter_main.get_critters()
+        self.critter_classes = list(self.model.critter_class_states.keys())
         self.num_classes = len(self.critter_classes)
         self.class_state_labels = {}
         ROW=3
         for x in range(self.num_classes):
             self.class_state_labels.update({self.critter_classes[x].__name__:
-                                    tk.Label(self.root, text=self.critter_classes[x].__name__+": 25+0=25")})
+                                    tk.Label(self.root, text=self.critter_classes[x].__name__+": 25 + 0 = 25")})
             self.class_state_labels[self.critter_classes[x].__name__].grid(column=25, row=ROW)
             ROW=ROW+1
 
@@ -41,16 +41,16 @@ class CritterGUI():
         self.speed_label = tk.Label(self.root, text='Speed:')
         self.speed_label.grid(column = 0, row = 10)
 
-        #Change speed of the simulation. Currently not functioning. Should be connected to update().
+        # Change speed of the simulation.
         self.speed_var = tk.IntVar()
         self.speed_var.set(10)
         self.scale = tk.Scale(self.root, variable = self.speed_var, orient='horizontal',
-                              length = 100, sliderlength = 10, from_=0, to=10)
+                              length = 100, sliderlength = 10, from_=1, to=10)
         self.scale.grid(column = 1, row = 10)
 
-        #Move count.
+        # Move count.
         self.move_count = 0
-        self.move_count_label = tk.Label(self.root, text='0 move')
+        self.move_count_label = tk.Label(self.root, text='0 moves')
         self.move_count_label.grid(column = 3, row = 10)
         
         # Go - when go, start simulation
@@ -113,8 +113,7 @@ class CritterGUI():
             self.display()
             self.incrementMove()
             self.changeClassState()
-            # self.root.after(int(5000/self.speed_var.get()), self.update)
-            self.root.after(1000, self.update)
+            self.root.after(int(500/self.speed_var.get()), self.update)
 
     def incrementMove(self):
         """
@@ -132,37 +131,32 @@ class CritterGUI():
             kills=self.model.critter_class_states[self.critter_classes[x]].kills
             total=alive+kills
             self.class_state_labels[self.critter_classes[x].__name__].config(text=self.critter_classes[x].__name__+": "+
-                                                                             str(alive)+"+"+str(kills)+"="+str(total))
+                                                                             str(alive)+" + "+str(kills)+" = "+str(total))
                                                                                  
-    # Executed when go is pressed.
     def go(self):
-        """Actually runs the GUI. Pretty straightforward."""
+        "Actually runs the GUI. Pretty straightforward."
         self.is_running = True
         self.update()
      
-    # Executed when stop is pressed
     def stop(self):
-        """Pause updating."""
+        "Pause updating."
         self.is_running = False
 
-    # Executed when tick is pressed
     def tick(self):
-        """Move all critters by 1 step."""
+        "Move all critters by 1 step."
         self.is_running = False
         self.model.update()
         self.display()
         self.incrementMove()
         self.changeClassState()
 
-    # Executed when reset is pressed
     def reset(self):
-        """Stop simulation. Change critter model."""
+        "Stop simulation, reset critter model."
         self.is_running = False
-        self.model = critter_model.CritterModel(40, 30, threading.Lock())
-        critter_main.populate_model(self.model)
+        self.model.reset(25)
         self.display()
-        self.move_count=0
-        self.move_count_label.config(text='0 move')
+        self.move_count = 0
+        self.move_count_label.config(text='0 moves')
 
     def start(self):
         self.root.mainloop()
@@ -173,11 +167,3 @@ def color_to_hex(color):
     passing numeric types as strings was an AWESOME idea.
     """
     return '#%02x%02x%02x'.upper() % (color.r, color.g, color.b)
-
-def main():
-    model = critter_model.CritterModel(40, 30, threading.Lock())
-    critter_main.populate_model(model)
-    c = CritterGUI(model)
-
-if __name__ == '__main__':
-    main()

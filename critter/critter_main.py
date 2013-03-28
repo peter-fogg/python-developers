@@ -37,8 +37,8 @@ def populate_model(model):
         model.add(standard, 25)
 
 def format_results(results):
-    """Returns the results of a critter fight in a nice format."""
-    return '\n'.join(['%s:%20s kills %3s alive' % (critter.__name__, state.kills, state.alive)
+    "Returns the results of a critter fight in a nice format."
+    return '\n'.join(['%s:%20s kills %3s alive %3s total' % (critter.__name__, state.kills, state.alive, state.kills + state.alive)
                       for critter, state in results])
 
 def quickfight(critter1, critter2, iterations=1000):
@@ -46,7 +46,7 @@ def quickfight(critter1, critter2, iterations=1000):
     Fight critter1 and critter2 with the standard classes,
     without showing a GUI. Prints the results at the end.
     """
-    c = critter_model.CritterModel(60, 50, threading.Lock())
+    c = critter_model.CritterModel(50, 40, threading.Lock())
     populate_model(c)
     c.add(critter1, 25)
     c.add(critter2, 25)
@@ -59,7 +59,7 @@ def showfight(critter1, critter2):
     Fight critter1 and critter2 with the standard classes, with a
     GUI. Prints the results at the end.
     """
-    c = critter_model.CritterModel(20, 30, threading.Lock())
+    c = critter_model.CritterModel(50, 40, threading.Lock())
     populate_model(c)
     c.add(critter1, 25)
     c.add(critter2, 25)

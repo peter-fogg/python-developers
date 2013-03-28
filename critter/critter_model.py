@@ -242,7 +242,7 @@ class CritterModel():
         results()[0] is (overall winner, state of winner).
         """
         return sorted(self.critter_class_states.items(),
-                      key=lambda state: state[1].kills + state[1].alive)
+                      key=lambda state: -(state[1].kills + state[1].alive))
         
             
 class ClassInfo():

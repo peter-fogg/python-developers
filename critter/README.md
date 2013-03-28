@@ -10,8 +10,8 @@ There are a lot more files in this version than in the old one.
 * critter_main.py -- The main function, etc. Finds all the critter classes and instantiates them in a CritterModel, and (depending on the command-line args) either does a quick fight with no GUI, or shows the fight for the in-class tournament.
 
 ## Usage
-    $> ./critter_main.py --fight BenK BobG
-will run the GUI, fighting Ben and Bob's critters along with the standard Tiger, Mouse, etc.
+    $> ./critter_main.py --fight PeterF OrenS
+will run the GUI, fighting Peter and Oren's critters along with the standard Tiger, Mouse, etc.
 
-    $> ./critter_main.py --quickfight BenK BobG
+    $> ./critter_main.py --quickfight PeterF OrenS
 will do the same thing, but no GUI. A list of the results is printed at the end.

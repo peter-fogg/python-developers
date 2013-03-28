@@ -99,6 +99,7 @@ class CritterModel():
             # Update positions
             self.grid[old_position.x][old_position.y] = None
             self.grid[position.x][position.y] = winner
+            self.critter_positions[winner] = position
             i += 1
             
     def move(self, direction, pos):

@@ -12,7 +12,8 @@ class Chameleon(critter.Critter):
         self.color = color.GREEN
         self.char = 'C'
     
-    def fight(self, opponent):
+    def fight(self, oppInfo):
+        self.color = oppInfo.color
         strategy = max(Chameleon.num_scratch, Chameleon.num_roar, Chameleon.num_pounce)
         if strategy == critter.SCRATCH:
             return critter.ROAR
@@ -47,15 +48,14 @@ class Chameleon(critter.Critter):
     def getChar(self):
         return self.char
     
-    def fightOver(self, won, oppMove, oppColor):
+    def fightOver(self, won, oppFight ):
         if won:
             Chameleon.num_wins += 1
         else:
             Chameleon.num_wins -= 1
-        if oppMove == critter.SCRATCH:
+        if oppFight == critter.SCRATCH:
             Chameleon.num_scratch += 1
-        elif oppMove == critter.ROAR:
+        elif oppFight == critter.ROAR:
             Chameleon.num_roar += 1
         else:
             Chameleon.num_pounce += 1
-        self.color = oppColor

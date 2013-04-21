@@ -21,13 +21,12 @@ class Critter():
     The base Critter class.
     """
 
-    # I'm not sure what the default behavior for this should be.
     def __init__(self):
         pass
         
-    # @param opponent The character of the current opponent.
+    # @param oppInfo The critter info of the current opponent.
     # @returns Your attack: ROAR, POUNCE, or SCRATCH
-    def fight(self, opponent):
+    def fight(self, oppInfo):
         pass
     
     # Give your color.
@@ -36,6 +35,7 @@ class Critter():
         pass
     
     # Give your direction.
+    # @param info your critter info
     # @returns A cardinal direction, in the form of a constant (NORTH, SOUTH)
     def getMove(self, info):
         pass
@@ -47,10 +47,9 @@ class Critter():
     
     # End of fight shenanigans.
     # @param won Boolean; true if won fight, false otherwise.
-    # @param oppMove Opponent's movement (ROAR, etc)
-    # @param oppColor Opponent's color.
+    # @param oppFight Opponent's choide of fight strategy (ROAR, etc)
     # @returns Nothing.
-    def fightOver(self, won, oppMove, oppColor):
+    def fightOver(self, won, oppFight):
         pass
     
     def __str__(self):

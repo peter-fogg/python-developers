@@ -10,7 +10,7 @@ class PeterF(critter.Critter):
     def __init__(self):
         pass
     
-    def fight(self, opponent):
+    def fight(self, oppInfo):
         return critter.ROAR
 
     def getMove(self, info):
@@ -22,5 +22,5 @@ class PeterF(critter.Critter):
     def getChar(self):
         return 'P'
 
-    def fightOver(self, won, oppMove, oppColor):
+    def fightOver(self, won, oppMove):
         pass

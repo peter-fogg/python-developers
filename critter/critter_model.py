@@ -11,7 +11,7 @@ import pprint
 Point = collections.namedtuple('Point', ['x', 'y'])
 
 # Again, we don't really need a whole class just to store this info.
-CritterInfo = collections.namedtuple('CritterInfo', ['x', 'y', 'width', 'height', 'getNeighbor'])
+CritterInfo = collections.namedtuple('CritterInfo', ['x', 'y', 'width', 'height', 'char', 'color', 'getNeighbor'])
 
 class CritterModel():
     """
@@ -89,6 +89,8 @@ class CritterModel():
             old_position = self.critter_positions[critter1]
             direction = critter1.getMove(CritterInfo(old_position.x, old_position.y,
                                                      self.width, self.height,
+                                                     critter1.getChar(),
+                                                     critter1.getColor(),
                                                      self.get_neighbor_func(old_position)))
             CritterModel.verify_move(direction)
             position = self.move(direction, old_position)
@@ -96,7 +98,7 @@ class CritterModel():
             winner = critter1
             critter2 = self.grid[position.x][position.y]
             if critter2 and position != old_position and critter1 != critter2: # Save each stone from fighting itself
-                winner = CritterModel.fight(critter1, critter2)
+                winner = self.fight(critter1, critter2)
                 loser = critter1 if winner == critter2 else critter2
                 self.critter_positions[winner] = position
                 # Get the loser out of here
@@ -140,34 +142,54 @@ class CritterModel():
         else:
             return pos
     
-    def fight(critter1, critter2):
+    def fight(self, critter1, critter2):
         """
         Force poor innocent Critters to fight to the death for the
         entertainment of Oberlin students. Returns the glorious
         victor.
         """
-        weapon1 = critter1.fight(critter2.getChar())
-        weapon2 = critter2.fight(critter1.getChar())
+        position = self.critter_positions[critter2]
+        weapon1 = critter1.fight(CritterInfo(position.x, position.y,
+                                                     self.width, self.height,
+                                                     critter2.getChar(),
+                                                     critter2.getColor(),
+                                                     self.get_neighbor_func(position)))
+        position = self.critter_positions[critter1]
+        weapon2 = critter2.fight(CritterInfo(position.x, position.y,
+                                                     self.width, self.height,
+                                                     critter1.getChar(),
+                                                     critter1.getColor(),
+                                                     self.get_neighbor_func(position))) 
+#        weapon1 = critter1.fight(critter2.getChar())
+#        weapon2 = critter2.fight(critter1.getChar())
         CritterModel.verify_weapon(weapon1)
         CritterModel.verify_weapon(weapon2)
         if (weapon1 == critter.ROAR and weapon2 == critter.SCRATCH or
             weapon1 == critter.SCRATCH and weapon2 == critter.POUNCE or
             weapon1 == critter.POUNCE and weapon2 == critter.ROAR):
-            critter1.fightOver(True, weapon2, critter2.getColor())
-            critter2.fightOver(False, weapon1, critter1.getColor())
+            critter1.fightOver(True, weapon2)
+            critter2.fightOver(False, weapon1)
+#            critter1.fightOver(True, weapon2, critter2.getColor())
+#            critter2.fightOver(False, weapon1, critter1.getColor())
             return critter1
         elif weapon1 == weapon2:
             if random.random() > .5:
-                critter1.fightOver(True, weapon2, critter2.getColor())
-                critter2.fightOver(False, weapon1, critter1.getColor())
+                critter1.fightOver(True, weapon2)
+                critter2.fightOver(False, weapon1)
+#                critter1.fightOver(True, weapon2, critter2.getColor())
+#                critter2.fightOver(False, weapon1, critter1.getColor())
                 return critter1
             else:
-                critter1.fightOver(False, weapon2, critter2.getColor())
-                critter2.fightOver(True, weapon1, critter1.getColor())
+                critter1.fightOver(False, weapon2)
+                critter2.fightOver(True, weapon1)
+#                critter1.fightOver(False, weapon2, critter2.getColor())
+#                critter2.fightOver(True, weapon1, critter1.getColor())
                 return critter2
         else:
-                critter1.fightOver(False, weapon2, critter2.getColor())
-                critter2.fightOver(True, weapon1, critter1.getColor())
+                critter1.fightOver(False, weapon2)
+                critter2.fightOver(True, weapon1)
+#                critter1.fightOver(False, weapon2, critter2.getColor())
+#                critter2.fightOver(True, weapon1, critter1.getColor())
                 return critter2
 
     def verify_weapon(weapon):
@@ -233,7 +255,9 @@ class CritterModel():
         def get_neighbor(direction):
             neighbor_pos = self.move(direction, position)
             neighbor = self.grid[neighbor_pos.x][neighbor_pos.y]
-            return neighbor.getChar() if neighbor else '.'
+            #print( neighbor, type(neighbor) )
+            return neighbor.__class__.__name__ if neighbor else '.'
+#            return neighbor.getChar() if neighbor else '.'
         return get_neighbor
 
     def results(self):

@@ -5,7 +5,7 @@ class OrenS(critter.Critter):
     def __init__(self):
         pass
     
-    def fight(self, opponent):
+    def fight(self, oppInfo):
         return critter.POUNCE
 
     def getMove(self, info):
@@ -17,5 +17,5 @@ class OrenS(critter.Critter):
     def getChar(self):
         return 'O'
 
-    def fightOver(self, won, oppMove, oppColor):
+    def fightOver(self, won, oppMove):
         pass

@@ -8,9 +8,10 @@ import inspect
 import os
 import threading
 
-import tiger, elephant, stone, mouse, chameleon
+#import tiger, elephant, stone, mouse, chameleon
+#STANDARD_CRITTERS = (tiger.Tiger, elephant.Elephant, stone.Stone, mouse.Mouse, chameleon.Chameleon)
+STANDARD_CRITTERS = ()
 
-STANDARD_CRITTERS = (tiger.Tiger, elephant.Elephant, stone.Stone, mouse.Mouse, chameleon.Chameleon)
 
 def get_critters(directory='.'):
     """
@@ -90,6 +91,13 @@ def main():
         critter1 = get_class(args.fight[0], critters)
         critter2 = get_class(args.fight[1], critters)
         showfight(critter1, critter2)
+    else:
+        model = critter_model.CritterModel(60, 50, threading.Lock())
+        #populate_model(c)
+        for critter in critters:
+            model.add(critter, 25)
+        c = critter_gui.CritterGUI(model)
+        input()
     
 if __name__ == '__main__':
     main()

@@ -85,7 +85,7 @@ class CritterGUI():
         """
         Displays a single char at position (x, y) on the canvas.
         """
-        self.canvas.itemconfig(self.chars[x][y], text=char, fill=color_to_hex(color))
+        self.canvas.itemconfig(self.chars[x][y], text=char, fill=color_to_hex(color), font='Courier 13 bold')
         self.canvas.tag_raise(self.chars[x][y])
 
     def display(self):
@@ -113,7 +113,7 @@ class CritterGUI():
             self.display()
             self.incrementMove()
             self.changeClassState()
-            self.root.after(int(1000/self.speed_var.get()), self.update)
+            self.root.after(int(500/self.speed_var.get()), self.update)
 
     def incrementMove(self):
         """

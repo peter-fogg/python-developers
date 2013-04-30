@@ -113,7 +113,7 @@ class CritterGUI():
             self.display()
             self.incrementMove()
             self.changeClassState()
-            self.root.after(int(500/self.speed_var.get()), self.update)
+            self.root.after(int(1000/self.speed_var.get()), self.update)
 
     def incrementMove(self):
         """
@@ -157,6 +157,12 @@ class CritterGUI():
         self.display()
         self.move_count = 0
         self.move_count_label.config(text='0 moves')
+        ROW = 3
+        for x in range(self.num_classes):
+            self.class_state_labels.update({self.critter_classes[x].__name__:
+                                    tk.Label(self.root, text=self.critter_classes[x].__name__+": 25 + 0 = 25")})
+            self.class_state_labels[self.critter_classes[x].__name__].grid(column=25, row=ROW)
+            ROW=ROW+1
 
     def start(self):
         self.root.mainloop()
